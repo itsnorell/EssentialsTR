@@ -6,15 +6,24 @@ import cn.nukkit.command.CommandSender;
 
 public class flyCommand extends Command {
 
-    public flyCommand() {
-        super("fly", "Uçmanı sağlar.");
+    public FlyCommand() {
+        super(
+                "fly",
+                "uçuş komutu"
+        );
+        setPermission(Manager.FEED_PERMISSION);
+        setPermissionMessage("§8» §cBu komudu kullanmak için §4§lVIP §r§colman gerekiyor!");
+        commandParameters.clear();
+        commandParameters.put("default", new CommandParameter[] {
+                CommandParameter.newType("player", true, CommandParamType.TARGET)
+        });
     }
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
         Player player = (Player) sender;
-        if (!player.isOp()) {
-            player.sendMessage("§7Bu komutu kullanabilmek için §6VIP §7izniniz olmalıdır.");
+        if (!testPermission(sender) || sender.getServer().isOp(sender.getName())) {
+            sender.sendMessage(this.getPermissionMessage());
             return false;
         }
         if (args.length > 0) {
